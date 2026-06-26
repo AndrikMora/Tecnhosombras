@@ -1,0 +1,958 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technosombras</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --red:        #d42b2b;
+      --red-dark:   #a81f1f;
+      --green:      #1e6b2e;
+      --green-dark: #154d20;
+      --green-light:#2a8c3e;
+      --gold:       #e8b422;
+      --cream:      #fdfaf3;
+      --offwhite:   #f5f2eb;
+      --text:       #1a1a1a;
+      --text-soft:  #4a4a4a;
+      --shadow:     rgba(0,0,0,0.12);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Source Sans 3',sans-serif; background:var(--cream); color:var(--text); overflow-x:hidden; }
+
+    /* ── NAV ── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      display:flex; justify-content:center; align-items:center; gap:2rem;
+      padding:.65rem 2rem;
+      background:rgba(253,250,243,0.95);
+      backdrop-filter:blur(10px);
+      border-bottom:3px solid var(--red);
+      transition:box-shadow .3s;
+    }
+    nav.scrolled { box-shadow:0 4px 24px var(--shadow); }
+    .nav-logo { display:flex; align-items:center; text-decoration:none; }
+    .nav-logo img { height:58px; width:auto; object-fit:contain; display:block; }
+    .nav-links { display:flex; gap:1.35rem; list-style:none; align-items:center; }
+    .nav-links a {
+      text-decoration:none; font-family:'Oswald',sans-serif;
+      font-size:.85rem; font-weight:500; letter-spacing:1.5px;
+      text-transform:uppercase; color:var(--green);
+      transition:color .2s;
+    }
+    .nav-links a:hover { color:var(--red); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height:100vh;
+      background: linear-gradient(160deg, #1a3d22 0%, #0f2415 60%, #1a1a1a 100%);
+      display:flex; align-items:center;
+      padding:6rem 2.5rem 4rem;
+      position:relative; overflow:hidden;
+    }
+    .hero-sun {
+      position:absolute; top:-60px; left:-60px;
+      width:340px; height:340px; border-radius:50%;
+      background:radial-gradient(circle, rgba(232,180,34,.15) 0%, rgba(212,43,43,.08) 50%, transparent 70%);
+      animation:pulse 7s ease-in-out infinite;
+    }
+    .hero-stripe {
+      position:absolute; bottom:0; left:0; right:0;
+      height:6px;
+      background:linear-gradient(90deg, var(--red) 0%, var(--gold) 50%, var(--green) 100%);
+    }
+    @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.1);opacity:.7} }
+
+    .hero-inner {
+      position:relative; z-index:2;
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:3.5rem; align-items:center;
+      width:100%; max-width:1100px; margin:0 auto;
+    }
+    .hero-content { max-width:560px; }
+
+    /* Hero image side */
+    .hero-image-wrap {
+      position:relative;
+      animation:fadeUp .6s .5s ease both;
+    }
+    .hero-img-frame {
+      width:100%; aspect-ratio:4/5;
+      border-radius:6px; overflow:hidden;
+      background:linear-gradient(135deg,#2a5c3a,#1a3d22);
+      box-shadow:0 24px 60px rgba(0,0,0,.45);
+      cursor:pointer;
+      position:relative;
+    }
+    .hero-img-frame img {
+      width:100%; height:100%; object-fit:cover; display:block;
+    }
+    .hero-img-placeholder {
+      width:100%; height:100%;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:1rem;
+      color:rgba(255,255,255,.35);
+      font-family:'Oswald',sans-serif; font-size:.75rem;
+      letter-spacing:2px; text-transform:uppercase; text-align:center;
+      padding:2rem;
+      transition:background .2s;
+    }
+    .hero-img-frame:hover .hero-img-placeholder { background:rgba(255,255,255,.05); }
+    .hero-img-placeholder .icon { font-size:2.5rem; opacity:.5; }
+    .hero-img-badge {
+      position:absolute; bottom:-1rem; left:-1rem;
+      background:var(--red); color:white;
+      padding:.6rem 1.2rem; border-radius:3px;
+      font-family:'Oswald',sans-serif; font-size:.75rem;
+      font-weight:600; letter-spacing:1.5px; text-transform:uppercase;
+      box-shadow:0 4px 16px rgba(212,43,43,.4);
+    }
+    .hero-img-corner {
+      position:absolute; top:-1rem; right:-1rem;
+      width:56px; height:56px; border-radius:50%;
+      background:var(--gold);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.5rem;
+      box-shadow:0 4px 14px rgba(232,180,34,.4);
+    }
+
+    @media(max-width:900px){
+      .hero-inner { grid-template-columns:1fr; }
+      .hero-image-wrap { display:none; }
+    }
+    .hero-tag {
+      display:inline-flex; align-items:center; gap:.5rem;
+      background:var(--red); color:white;
+      font-family:'Oswald',sans-serif; font-size:.7rem;
+      letter-spacing:2.5px; text-transform:uppercase;
+      padding:.4rem 1.1rem; border-radius:2px;
+      margin-bottom:1.5rem;
+      animation:fadeUp .6s ease both;
+    }
+    .hero-title {
+      font-family:'Oswald',sans-serif;
+      font-size:clamp(3rem,6vw,5.5rem);
+      font-weight:700; line-height:1.0;
+      color:white; margin-bottom:1.25rem;
+      animation:fadeUp .6s .15s ease both;
+    }
+    .hero-title em { font-style:normal; color:var(--gold); }
+    .hero-subtitle {
+      font-size:1.1rem; color:rgba(255,255,255,.7);
+      line-height:1.75; max-width:480px;
+      margin-bottom:2.5rem; font-weight:300;
+      animation:fadeUp .6s .3s ease both;
+    }
+    .hero-cta { display:flex; gap:1rem; flex-wrap:wrap; animation:fadeUp .6s .45s ease both; }
+
+    .btn-red {
+      display:inline-flex; align-items:center; gap:.5rem;
+      background:var(--red); color:white;
+      padding:.9rem 2rem; border-radius:3px;
+      font-family:'Oswald',sans-serif; font-weight:500;
+      font-size:.9rem; letter-spacing:1px;
+      text-transform:uppercase; text-decoration:none;
+      transition:background .2s, transform .2s, box-shadow .2s;
+      box-shadow:0 4px 18px rgba(212,43,43,.4);
+    }
+    .btn-red:hover { background:var(--red-dark); transform:translateY(-2px); box-shadow:0 8px 28px rgba(212,43,43,.45); }
+
+    .btn-outline {
+      display:inline-flex; align-items:center; gap:.5rem;
+      background:transparent; color:white;
+      padding:.9rem 2rem; border-radius:3px;
+      font-family:'Oswald',sans-serif; font-weight:500;
+      font-size:.9rem; letter-spacing:1px;
+      text-transform:uppercase; text-decoration:none;
+      border:2px solid rgba(255,255,255,.4);
+      transition:all .2s;
+    }
+    .btn-outline:hover { background:white; color:var(--green-dark); border-color:white; }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── SECTIONS ── */
+    section { padding:6rem 2.5rem; }
+    .section-label {
+      font-family:'Oswald',sans-serif; font-size:.7rem;
+      font-weight:500; letter-spacing:3px; text-transform:uppercase;
+      color:var(--red); margin-bottom:.6rem;
+    }
+    .section-title {
+      font-family:'Oswald',sans-serif;
+      font-size:clamp(2rem,4vw,3rem); font-weight:700;
+      color:var(--green-dark); line-height:1.15; margin-bottom:.9rem;
+    }
+    .section-desc {
+      font-size:1rem; color:var(--text-soft);
+      line-height:1.75; max-width:540px; font-weight:300;
+    }
+    .section-header { margin-bottom:3.5rem; }
+
+    /* ── PRODUCTOS ── */
+    #productos { background:var(--cream); }
+    .products-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:1.25rem; max-width:1100px; margin:0 auto;
+    }
+    .product-card {
+      background:white; border-radius:4px;
+      overflow:hidden;
+      border-top:4px solid transparent;
+      transition:transform .25s, box-shadow .25s, border-color .25s;
+      box-shadow:0 2px 12px var(--shadow);
+    }
+    .product-card:hover {
+      transform:translateY(-5px);
+      box-shadow:0 12px 32px rgba(0,0,0,.12);
+      border-color:var(--gold);
+    }
+    .product-photo {
+      width:100%;
+      aspect-ratio:16/10;
+      background:#dde8dd;
+      overflow:hidden;
+    }
+    .product-photo img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transition:transform .35s ease;
+    }
+    .product-card:hover .product-photo img { transform:scale(1.04); }
+    .product-body { padding:1.35rem 1.5rem 1.55rem; }
+    .product-name {
+      font-family:'Oswald',sans-serif; font-size:1.15rem;
+      font-weight:600; color:var(--green-dark); margin-bottom:.5rem;
+    }
+    .product-desc { font-size:.9rem; color:var(--text-soft); line-height:1.65; font-weight:300; }
+
+    /* ── GALERÍA / CLIENTES ── */
+    #galeria { background:#0f1f12; }
+    #galeria .section-label { color:var(--gold); }
+    #galeria .section-title { color:white; }
+    #galeria .section-desc { color:rgba(255,255,255,.6); }
+    .gallery-grid {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      grid-template-rows:repeat(3,280px);
+      gap:.85rem; max-width:1100px; margin:0 auto;
+    }
+    .gallery-card {
+      position:relative; border-radius:6px; overflow:hidden;
+      cursor:pointer;
+      box-shadow:0 6px 24px rgba(0,0,0,.45);
+    }
+    .gallery-card:nth-child(1),
+    .gallery-card:nth-child(4),
+    .gallery-card:nth-child(5) { grid-column:span 2; }
+    .gallery-card img {
+      width:100%; height:100%; object-fit:cover; display:block;
+      transition:transform .45s ease;
+    }
+    .gallery-card:hover img { transform:scale(1.07); }
+    .gallery-overlay {
+      position:absolute; inset:0;
+      background:linear-gradient(to top, rgba(0,0,0,.88) 0%, rgba(0,0,0,.2) 55%, transparent 80%);
+      display:flex; flex-direction:column; justify-content:flex-end;
+      padding:1.4rem 1.5rem;
+      transition:background .3s;
+    }
+    .gallery-card:hover .gallery-overlay {
+      background:linear-gradient(to top, rgba(0,0,0,.95) 0%, rgba(0,0,0,.5) 65%, transparent 88%);
+    }
+    .gallery-service {
+      font-family:'Oswald',sans-serif; font-size:.65rem;
+      letter-spacing:2.5px; text-transform:uppercase;
+      color:var(--gold); margin-bottom:.3rem;
+    }
+    .gallery-title {
+      font-family:'Oswald',sans-serif; font-size:1.05rem;
+      font-weight:600; color:white; margin-bottom:.35rem; line-height:1.2;
+    }
+    .gallery-stars { color:var(--gold); font-size:.82rem; letter-spacing:1px; margin-bottom:.45rem; }
+    .gallery-review {
+      font-size:.83rem; color:rgba(255,255,255,.78);
+      line-height:1.55; font-weight:300;
+      max-height:0; overflow:hidden;
+      transition:max-height .35s ease, opacity .3s ease;
+      opacity:0;
+    }
+    .gallery-card:hover .gallery-review { max-height:100px; opacity:1; }
+    .gallery-client {
+      font-size:.72rem; color:rgba(255,255,255,.42);
+      font-weight:600; margin-top:.5rem;
+      font-family:'Oswald',sans-serif; letter-spacing:.5px;
+    }
+
+    /* ── NOSOTROS ── */
+    #nosotros { background:var(--offwhite); }
+    .about-inner {
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:5rem; align-items:center; max-width:1100px; margin:0 auto;
+    }
+    .about-image-wrap { position:relative; }
+    .about-img-placeholder {
+      width:100%; aspect-ratio:4/5; border-radius:4px;
+      background:linear-gradient(135deg,#c8dcc8,#b0ccb0);
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:.75rem;
+      color:var(--green-dark); font-family:'Oswald',sans-serif;
+      font-size:.7rem; letter-spacing:1.5px; text-transform:uppercase;
+      box-shadow:0 8px 32px var(--shadow); cursor:pointer;
+    }
+    .about-img-placeholder .icon { font-size:2.5rem; opacity:.4; }
+    .about-badge {
+      position:absolute; bottom:-1.5rem; right:-1.5rem;
+      background:var(--red); color:white;
+      width:110px; height:110px; border-radius:50%;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      font-family:'Oswald',sans-serif;
+      box-shadow:0 4px 18px rgba(212,43,43,.4);
+    }
+    .about-badge .years { font-size:2rem; font-weight:700; line-height:1; }
+    .about-badge .years-label {
+      font-size:.55rem; letter-spacing:1.5px;
+      text-transform:uppercase; margin-top:2px;
+      font-family:'Source Sans 3',sans-serif; font-weight:600;
+      text-align:center;
+    }
+    .about-values { display:flex; flex-direction:column; gap:1.25rem; margin-top:2rem; }
+    .value-item { display:flex; gap:1rem; align-items:flex-start; }
+    .value-dot {
+      width:8px; height:8px; border-radius:50%;
+      background:var(--red); margin-top:.45rem; flex-shrink:0;
+    }
+    .value-text strong {
+      display:block; font-weight:600;
+      color:var(--green-dark); margin-bottom:.2rem; font-size:.95rem;
+    }
+    .value-text span { font-size:.88rem; color:var(--text-soft); font-weight:300; line-height:1.55; }
+
+    /* ── CONTACTO ── */
+    #contacto { background:var(--green-dark); color:white; }
+    #contacto .section-label { color:var(--gold); }
+    #contacto .section-title { color:white; }
+    #contacto .section-desc { color:rgba(255,255,255,.6); }
+    .contact-inner {
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:5rem; max-width:1100px; margin:0 auto; align-items:start;
+    }
+    .contact-cards { display:flex; flex-direction:column; gap:1.25rem; margin-top:2.5rem; }
+    .contact-card { display:flex; gap:1rem; align-items:center; }
+    .contact-card-icon {
+      width:48px; height:48px; border-radius:6px;
+      background:rgba(255,255,255,.08);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.3rem; flex-shrink:0;
+    }
+    .contact-card-text strong {
+      display:block; font-size:.7rem; font-weight:600;
+      letter-spacing:1.5px; text-transform:uppercase;
+      color:var(--gold); margin-bottom:.2rem;
+      font-family:'Oswald',sans-serif;
+    }
+    .contact-card-text span { color:rgba(255,255,255,.8); font-size:.95rem; }
+    .whatsapp-btn {
+      display:inline-flex; align-items:center; gap:.75rem;
+      margin-top:2rem; background:#25d366; color:white;
+      padding:1rem 2rem; border-radius:3px;
+      font-family:'Oswald',sans-serif; font-weight:500;
+      font-size:1rem; letter-spacing:.5px;
+      text-transform:uppercase; text-decoration:none;
+      transition:background .2s, transform .2s;
+      box-shadow:0 4px 16px rgba(37,211,102,.3);
+    }
+    .whatsapp-btn:hover { background:#1ebe5c; transform:translateY(-2px); }
+    .contact-form {
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:6px; padding:2.5rem;
+    }
+    .contact-form h3 {
+      font-family:'Oswald',sans-serif; font-size:1.3rem;
+      margin-bottom:1.5rem; color:white;
+    }
+    .form-group { margin-bottom:1.25rem; }
+    .form-group label {
+      display:block; font-size:.7rem; font-weight:600;
+      letter-spacing:1px; text-transform:uppercase;
+      color:rgba(255,255,255,.45); margin-bottom:.4rem;
+      font-family:'Oswald',sans-serif;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width:100%; background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12); border-radius:3px;
+      padding:.75rem 1rem; color:white;
+      font-family:'Source Sans 3',sans-serif; font-size:.95rem;
+      outline:none; transition:border-color .2s;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color:rgba(255,255,255,.3); }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { border-color:var(--gold); }
+    .form-group select option { background:var(--green-dark); color:white; }
+    .form-group textarea { resize:vertical; min-height:100px; }
+    .form-submit {
+      width:100%; background:var(--red); color:white;
+      border:none; padding:.9rem; border-radius:3px;
+      font-family:'Oswald',sans-serif; font-size:1rem;
+      font-weight:500; letter-spacing:1px;
+      text-transform:uppercase; cursor:pointer;
+      transition:background .2s, transform .2s;
+    }
+    .form-submit:hover { background:var(--red-dark); transform:translateY(-1px); }
+
+    /* ── FOOTER ── */
+    footer {
+      background:#0f1f12; color:rgba(255,255,255,.4);
+      text-align:center; padding:2rem; font-size:.82rem;
+    }
+    footer strong { color:rgba(255,255,255,.65); }
+    .footer-stripe {
+      height:4px;
+      background:linear-gradient(90deg,var(--green) 0%,var(--gold) 50%,var(--red) 100%);
+    }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,.92); z-index:999;
+      align-items:center; justify-content:center;
+    }
+    .lightbox.open { display:flex; }
+    .lightbox img { max-width:90vw; max-height:88vh; border-radius:4px; object-fit:contain; }
+    .lightbox-close {
+      position:absolute; top:1.5rem; right:2rem;
+      color:white; font-size:2rem; cursor:pointer;
+      line-height:1; opacity:.65; transition:opacity .2s;
+    }
+    .lightbox-close:hover { opacity:1; }
+
+    /* ── CAROUSEL ── */
+    .carousel { position:relative; width:100%; height:100%; }
+    .carousel-slide { position:absolute; inset:0; opacity:0; transition:opacity .65s ease; }
+    .carousel-slide.active { opacity:1; }
+    .carousel-slide img { width:100%; height:100%; object-fit:cover; display:block; }
+    .carousel-btn {
+      position:absolute; top:50%; transform:translateY(-50%);
+      background:rgba(0,0,0,.38); color:white;
+      border:none; width:40px; height:40px; border-radius:50%;
+      cursor:pointer; z-index:10; font-size:1.4rem; line-height:1;
+      display:flex; align-items:center; justify-content:center;
+      transition:background .2s;
+    }
+    .carousel-btn:hover { background:rgba(0,0,0,.65); }
+    .carousel-btn.prev { left:.75rem; }
+    .carousel-btn.next { right:.75rem; }
+    .carousel-dots {
+      position:absolute; bottom:.9rem; left:50%; transform:translateX(-50%);
+      display:flex; gap:7px; z-index:10;
+    }
+    .carousel-dot {
+      width:8px; height:8px; border-radius:50%;
+      background:rgba(255,255,255,.4); cursor:pointer;
+      border:none; padding:0; transition:background .2s, transform .2s;
+    }
+    .carousel-dot.active { background:white; transform:scale(1.35); }
+
+    /* ── SOCIAL BUTTONS ── */
+    .social-row { display:flex; gap:.75rem; margin-top:1rem; flex-wrap:wrap; }
+    .social-btn {
+      display:inline-flex; align-items:center; gap:.55rem;
+      padding:.7rem 1.4rem; border-radius:3px;
+      font-family:'Oswald',sans-serif; font-weight:500;
+      font-size:.85rem; letter-spacing:.5px; text-transform:uppercase;
+      text-decoration:none; transition:opacity .2s, transform .2s;
+    }
+    .social-btn:hover { opacity:.85; transform:translateY(-2px); }
+    .social-btn.instagram { background:linear-gradient(135deg,#833ab4 0%,#fd1d1d 50%,#fcb045 100%); color:white; box-shadow:0 4px 14px rgba(131,58,180,.3); }
+    .social-btn.facebook { background:#1877f2; color:white; box-shadow:0 4px 14px rgba(24,119,242,.3); }
+    .footer-social { display:flex; gap:1.5rem; justify-content:center; margin-top:.65rem; flex-wrap:wrap; }
+    .footer-social a {
+      color:rgba(255,255,255,.5); text-decoration:none; font-size:.82rem;
+      display:inline-flex; align-items:center; gap:.4rem; transition:color .2s;
+    }
+    .footer-social a:hover { color:rgba(255,255,255,.85); }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:768px){
+      nav { padding:.75rem 1.25rem; gap:1rem; flex-wrap:wrap; }
+      .nav-logo img { height:48px; }
+      .nav-links { gap:.85rem; flex-wrap:wrap; justify-content:center; }
+      .nav-links a { font-size:.72rem; }
+      section { padding:4rem 1.25rem; }
+      .about-inner, .contact-inner { grid-template-columns:1fr; gap:2.5rem; }
+      .about-badge { display:none; }
+      .gallery-grid {
+        grid-template-columns:1fr;
+        grid-template-rows:auto;
+      }
+      .gallery-card { aspect-ratio:4/3; height:auto; }
+      .gallery-card:nth-child(1),
+      .gallery-card:nth-child(4),
+      .gallery-card:nth-child(5) { grid-column:span 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a class="nav-logo" href="#hero" aria-label="Volver al inicio">
+      <img src="../Images/LogoTechnosombrasSinFondo_recortado.png" alt="Technosombras logo" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="#productos">Productos</a></li>
+      <li><a href="#galeria">Clientes</a></li>
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-sun"></div>
+    <div class="hero-stripe"></div>
+    <div class="hero-inner">
+      <!-- LEFT: text -->
+      <div class="hero-content">
+        <div class="hero-tag">Protección y confort para tu espacio</div>
+        <h1 class="hero-title">Fabricación e instalación,<br>a la <em>medida</em></h1>
+        <p class="hero-subtitle">Fabricamos e instalamos mallasombra, toldos, lonas y estructuras hechas a medida para que disfrutes tu espacio con sombra y frescura.</p>
+        <div class="hero-cta">
+          <a href="#contacto" class="btn-red">Pide tu cotización</a>
+          <a href="#galeria" class="btn-outline">Ver trabajos →</a>
+        </div>
+      </div>
+      <!-- RIGHT: image -->
+      <div class="hero-image-wrap">
+        <div class="hero-img-frame" id="heroImgFrame">
+          <div class="carousel" id="heroCarousel">
+            <!-- ════ CARRUSEL: cambia las 7 imágenes aquí ════ -->
+            <div class="carousel-slide active">
+              <img src="../Images/WhatsApp Image 2026-06-23 at 11.08.02 PM.jpeg" alt="Mallasombra de colores en patio" />
+            </div>
+            <div class="carousel-slide">
+              <img src="../Images/WhatsApp Image 2026-06-23 at 11.08.33 PM.jpeg" alt="Mallasombra azul sobre alberca" />
+            </div>
+            <div class="carousel-slide">
+              <img src="../Images/WhatsApp Image 2026-06-23 at 11.08.37 PM.jpeg" alt="Mallasombra roja y azul en espacio comercial" />
+            </div>
+            <div class="carousel-slide">
+              <img src="../Images/WhatsApp Image 2026-06-23 at 11.08.62 PM.jpeg" alt="Estructura de mallasombra verde en corredor con palmeras" />
+            </div>
+            <div class="carousel-slide">
+              <img src="../Images/WhatsApp Image 2026-06-23 at 11.08.47 PM.jpeg" alt="Estructura de arco rojo con mallasombra" />
+            </div>
+            <div class="carousel-slide">
+              <img src="../Images/WhatsApp Image 2026-06-23 at 11.08.59 PM.jpeg" alt="Mallasombra beige sobre patio residencial" />
+            </div>
+            <div class="carousel-slide">
+              <img src="../Images/WhatsApp Image 2026-06-23 at 11.08.51 PM.jpeg" alt="Serie de estructuras de mallasombra verde" />
+            </div>
+            <!-- ════════════════════════════════════════════ -->
+            <button class="carousel-btn prev" onclick="carouselMove(-1)" aria-label="Anterior">&#8249;</button>
+            <button class="carousel-btn next" onclick="carouselMove(1)" aria-label="Siguiente">&#8250;</button>
+            <div class="carousel-dots" id="carouselDots"></div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    </section>
+
+  <!-- PRODUCTOS -->
+  <section id="productos">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div class="section-header">
+        <p class="section-label">Lo que ofrecemos</p>
+        <h2 class="section-title">Productos</h2>
+        <p class="section-desc">Materiales y soluciones de sombra para distintos espacios. Te ayudamos a elegir el producto adecuado según el uso, tamaño y nivel de protección que necesitas.</p>
+      </div>
+      <div class="products-grid">
+        <div class="product-card">
+          <div class="product-photo">
+            <img src="../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.37%20PM.jpeg" alt="Mallasombra azul instalada sobre alberca">
+          </div>
+          <div class="product-body">
+            <div class="product-name">Mallasombra</div>
+            <p class="product-desc">Malla para sombra en patios, cocheras, albercas, escuelas, jardines y áreas exteriores. Disponible en diferentes colores y medidas.</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-photo">
+            <img src="../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.02%20PM.jpeg" alt="Mallasombra de colores instalada en patio">
+          </div>
+          <div class="product-body">
+            <div class="product-name">Mallasombra de colores</div>
+            <p class="product-desc">Opciones decorativas y funcionales para dar sombra con un acabado más llamativo en casas, quintas, escuelas y espacios recreativos.</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-photo">
+            <img src="../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.30%20PM.jpeg" alt="Toldo de lona color beige instalado en cochera">
+          </div>
+          <div class="product-body">
+            <div class="product-name">Lona ahulada</div>
+            <p class="product-desc">Lona resistente para toldos que ayudan a proteger del sol y la lluvia en ventanas, entradas, cocheras y áreas comerciales.</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-photo">
+            <img src="../Images/ChatGPT%20Image%20Jun%204,%202026,%2008_05_35%20PM.png" alt="Toldo de mallasombra con estructura metálica">
+          </div>
+          <div class="product-body">
+            <div class="product-name">Estructuras metálicas</div>
+            <p class="product-desc">Estructuras hechas a la medida para soportar mallasombra, lona, toldos, cocheras y áreas grandes que requieren sombra permanente.</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-photo">
+            <img src="../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.11%20PM.jpeg" alt="Toldos de mallasombra instalados en patio residencial">
+          </div>
+          <div class="product-body">
+            <div class="product-name">Toldos a la medida</div>
+            <p class="product-desc">Toldos fabricados según el espacio, con opciones de malla, lona o estructura para lograr la sombra que necesita cada proyecto.</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-photo">
+            <img src="../Images/ChatGPT%20Image%20Jun%204,%202026,%2008_10_58%20PM.png" alt="Área grande cubierta con mallasombra azul">
+          </div>
+          <div class="product-body">
+            <div class="product-name">Refuerzos y accesorios</div>
+            <p class="product-desc">Opciones de soportes, tensores, refuerzos y acabados para mejorar la firmeza, duración y presentación de la instalación.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLIENTES SATISFECHOS -->
+  <section id="galeria">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div class="section-header">
+        <p class="section-label">Trabajos realizados</p>
+        <h2 class="section-title">Clientes satisfechos</h2>
+        <p class="section-desc">Cada instalación se hace a la medida del espacio. Pasa el cursor sobre cada foto para ver la reseña del cliente.</p>
+      </div>
+      <div class="gallery-grid">
+        <!-- Card 1 — span 2 -->
+        <div class="gallery-card" onclick="openReviewPhoto('../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.59%20PM.jpeg')">
+          <img src="../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.59%20PM.jpeg" alt="Mallasombra roja y azul en área comercial" />
+          <div class="gallery-overlay">
+            <div class="gallery-service">Toldo de mallasombra</div>
+            <div class="gallery-title">Área exterior fresca y protegida</div>
+            <div class="gallery-stars">★★★★★</div>
+            <p class="gallery-review">"Quedó muy bien instalado y se nota la diferencia en el calor. Nos explicaron las opciones y cumplieron con el tiempo acordado."</p>
+            <div class="gallery-client">Cliente residencial · Reynosa</div>
+          </div>
+        </div>
+        <!-- Card 2 — 1 col -->
+        <div class="gallery-card" onclick="openReviewPhoto('../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.62%20PM.jpeg')">
+          <img src="../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.62%20PM.jpeg" alt="Techo de mallasombra verde en corredor con palmeras" />
+          <div class="gallery-overlay">
+            <div class="gallery-service">Techo de mallasombra</div>
+            <div class="gallery-title">Corredor institucional cubierto</div>
+            <div class="gallery-stars">★★★★★</div>
+            <p class="gallery-review">"La estructura se ve firme, limpia y bien terminada. Superaron las expectativas."</p>
+            <div class="gallery-client">Cliente institucional · Reynosa</div>
+          </div>
+        </div>
+        <!-- Card 3 — 1 col -->
+        <div class="gallery-card" onclick="openReviewPhoto('../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.50%20PM.jpeg')">
+          <img src="../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.50%20PM.jpeg" alt="Mallasombra beige sobre patio residencial" />
+          <div class="gallery-overlay">
+            <div class="gallery-service">Toldo a la medida</div>
+            <div class="gallery-title">Patio familiar protegido</div>
+            <div class="gallery-stars">★★★★★</div>
+            <p class="gallery-review">"Nos ayudaron a elegir el color y la medida. El espacio cambió por completo."</p>
+            <div class="gallery-client">Cliente residencial · Reynosa</div>
+          </div>
+        </div>
+        <!-- Card 4 — span 2 -->
+        <div class="gallery-card" onclick="openReviewPhoto('../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.44%20PM.jpeg')">
+          <img src="../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.44%20PM.jpeg" alt="Estructura de arco rojo con mallasombra en campo de béisbol" />
+          <div class="gallery-overlay">
+            <div class="gallery-service">Estructura especial</div>
+            <div class="gallery-title">Instalación única a la medida</div>
+            <div class="gallery-stars">★★★★★</div>
+            <p class="gallery-review">"Tomaron medidas, recomendaron la altura y dejaron todo bien alineado. Se ve resistente y con buen acabado."</p>
+            <div class="gallery-client">Cliente comercial · Área deportiva</div>
+          </div>
+        </div>
+        <!-- Card 5 — span 2 -->
+        <div class="gallery-card" onclick="openReviewPhoto('../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.52%20PM.jpeg')">
+          <img src="../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.52%20PM.jpeg" alt="Estructura semicilíndrica morada en campo de softbol" />
+          <div class="gallery-overlay">
+            <div class="gallery-service">Área amplia con sombra</div>
+            <div class="gallery-title">Instalación funcional y resistente</div>
+            <div class="gallery-stars">★★★★★</div>
+            <p class="gallery-review">"El espacio quedó cubierto justo como lo necesitábamos. Buen trato y trabajo limpio."</p>
+            <div class="gallery-client">Cliente de proyecto · Reynosa</div>
+          </div>
+        </div>
+        <!-- Card 6 — 1 col -->
+        <div class="gallery-card" onclick="openReviewPhoto('../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.12%20PM.jpeg')">
+          <img src="../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.12%20PM.jpeg" alt="Vista aérea de mallasombra de colores en terraza" />
+          <div class="gallery-overlay">
+            <div class="gallery-service">Mallasombra de colores</div>
+            <div class="gallery-title">Terraza con acabado llamativo</div>
+            <div class="gallery-stars">★★★★★</div>
+            <p class="gallery-review">"Revisaron la instalación y dejaron todo firmemente terminado. Muy recomendables."</p>
+            <div class="gallery-client">Cliente residencial · Reynosa</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOSOTROS -->
+  <section id="nosotros">
+    <div class="about-inner">
+      <div class="about-image-wrap">
+        <img src="../Images/WhatsApp%20Image%202026-06-23%20at%2011.08.11%20PM.jpeg" alt="Instalación de mallasombra Technosombras" style="width:100%;aspect-ratio:4/5;border-radius:4px;object-fit:cover;box-shadow:0 8px 32px rgba(0,0,0,.12);" />
+        <div class="about-badge">
+          <span class="years">18+</span>
+          <span class="years-label">años de<br>experiencia</span>
+        </div>
+      </div>
+      <div>
+        <p class="section-label">Quiénes somos</p>
+        <h2 class="section-title">Nacimos de ver<br>trabajo mal hecho</h2>
+        <p class="section-desc">En 2008, Reynosa estaba llena de mallasombras flojas, mal instaladas, que se veían mal desde el primer día. Alguien decidió hacer lo correcto: fundó Technosombras con una sola regla — o queda bien, o no queda.</p>
+        <p class="section-desc" style="margin-top:1rem;">18 años después, ese estándar no ha cambiado. Cada instalación — residencial, comercial o institucional — lleva el mismo cuidado que la primera.</p>
+        <div class="about-values">
+          <div class="value-item">
+            <div class="value-dot"></div>
+            <div class="value-text">
+              <strong>Malla bien estirada, siempre</strong>
+              <span>Sin flojedad ni pliegues. Una malla que se ve chueca hace que todo el espacio se vea descuidado. Aquí eso no sucede.</span>
+            </div>
+          </div>
+          <div class="value-item">
+            <div class="value-dot"></div>
+            <div class="value-text">
+              <strong>Garantía incluida</strong>
+              <span>Si el clima daña la instalación, respondemos. Sin pretextos y sin costos ocultos.</span>
+            </div>
+          </div>
+          <div class="value-item">
+            <div class="value-dot"></div>
+            <div class="value-text">
+              <strong>Cobertura en el norte</strong>
+              <span>Reynosa, Río Bravo y el norte de Tamaulipas. Y próximamente el Valle del Río Grande, Texas.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto">
+    <div class="contact-inner">
+      <div>
+        <p class="section-label">Hablemos</p>
+        <h2 class="section-title">Cuéntanos qué<br>necesitas, cotizamos<br>sin costo</h2>
+        <p class="section-desc">Contáctanos por WhatsApp o llena el formulario. Te respondemos rápido y agendamos una visita sin costo.</p>
+        <div class="contact-cards">
+          <div class="contact-card">
+            <div class="contact-card-icon">📍</div>
+            <div class="contact-card-text">
+              <strong>Ubicación</strong>
+              <span>Carretera A Matamoros Km 91, 88760 Reynosa, Tamps.</span>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-card-icon">📞</div>
+            <div class="contact-card-text">
+              <strong>Teléfono</strong>
+              <span>+52 899 926 2489</span>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-card-icon">🕘</div>
+            <div class="contact-card-text">
+              <strong>Horario de atención</strong>
+              <span>Lunes – Viernes, 9:00 am – 6:00 pm</span>
+            </div>
+          </div>
+        </div>
+        <a href="https://wa.me/528999262489?text=Hola,%20me%20interesa%20una%20cotizaci%C3%B3n%20de%20Technosombras" target="_blank" class="whatsapp-btn" style="margin-bottom:0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Escríbenos por WhatsApp
+        </a>
+        <div class="social-row">
+          <a href="https://www.instagram.com/technosombras.899/" target="_blank" class="social-btn instagram">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            Instagram
+          </a>
+          <a href="https://www.facebook.com/technosombras1" target="_blank" class="social-btn facebook">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            Facebook
+          </a>
+        </div>
+      </div>
+      <div class="contact-form">
+        <h3>Solicita tu cotización gratis</h3>
+        <div class="form-group">
+          <label>Tu nombre</label>
+          <input type="text" placeholder="Ej. María González" />
+        </div>
+        <div class="form-group">
+          <label>Teléfono / WhatsApp</label>
+          <input type="tel" placeholder="+52 899 926 2489" />
+        </div>
+        <div class="form-group">
+          <label>Tipo de producto o servicio</label>
+          <select>
+            <option value="">Selecciona una opción…</option>
+            <option>Mallasombra</option>
+            <option>Lona ahulada</option>
+            <option>Toldo a la medida</option>
+            <option>Estructura metálica</option>
+            <option>Toldos de mallasombra</option>
+            <option>Techos de mallasombra</option>
+            <option>Toldos de lona ahulada</option>
+            <option>Toldos enrollables / cortinas enrollables</option>
+            <option>Estructuras metálicas para sombra</option>
+            <option>Mantenimiento / Reparación</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Mensaje (opcional)</label>
+          <textarea placeholder="Cuéntanos brevemente qué necesitas…"></textarea>
+        </div>
+        <button class="form-submit" onclick="handleSubmit()">Enviar solicitud ☀️</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-stripe"></div>
+  <footer>
+    <p><strong>Technosombras</strong> · Carretera A Matamoros Km 91, 88760 Reynosa, Tamps. · © 2026</p>
+    <div class="footer-social">
+      <a href="https://www.instagram.com/technosombras.899/" target="_blank">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        @technosombras.899
+      </a>
+      <a href="https://www.facebook.com/technosombras1" target="_blank">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        technosombras1
+      </a>
+    </div>
+  </footer>
+
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close" onclick="closeLightbox()">✕</span>
+    <img id="lightboxImg" src="" alt="Foto del proyecto" />
+  </div>
+
+  <script>
+    window.addEventListener('scroll',()=>{
+      document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>40);
+    });
+    function openReviewPhoto(src){
+      document.getElementById('lightboxImg').src=src;
+      document.getElementById('lightbox').classList.add('open');
+    }
+    function openHeroUpload(){ document.getElementById('heroFileInput').click(); }
+    function handleHeroImage(e){
+      const file=e.target.files[0]; if(!file)return;
+      const r=new FileReader();
+      r.onload=(ev)=>{
+        const frame=document.getElementById('heroImgFrame');
+        frame.innerHTML='<img src="'+ev.target.result+'" style="width:100%;height:100%;object-fit:cover;display:block;" />';
+        frame.onclick=function(){ openHeroUpload(); };
+        e.target.value='';
+      };
+      r.readAsDataURL(file);
+    }
+    function openAboutUpload(){ document.getElementById('aboutFileInput').click(); }
+    function handleAboutImage(e){
+      const file=e.target.files[0]; if(!file)return;
+      const r=new FileReader();
+      r.onload=(ev)=>{
+        const w=document.querySelector('.about-img-placeholder');
+        w.outerHTML='<img src="'+ev.target.result+'" style="width:100%;aspect-ratio:4/5;border-radius:4px;object-fit:cover;box-shadow:0 8px 32px rgba(0,0,0,.12);cursor:pointer;" onclick="document.getElementById(\'aboutFileInput\').click()" />';
+      };
+      r.readAsDataURL(file);
+    }
+    function closeLightbox(){ document.getElementById('lightbox').classList.remove('open'); }
+    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape')closeLightbox(); });
+    function handleSubmit(){
+      const nombre   = document.querySelector('.contact-form input[type="text"]').value.trim();
+      const telefono = document.querySelector('.contact-form input[type="tel"]').value.trim();
+      const servicio = document.querySelector('.contact-form select').value;
+      const mensaje  = document.querySelector('.contact-form textarea').value.trim();
+      const btn      = document.querySelector('.form-submit');
+
+      if(!nombre || !telefono){
+        btn.textContent='⚠️ Por favor ingresa nombre y teléfono.';
+        btn.style.background='#a81f1f';
+        setTimeout(()=>{ btn.textContent='Enviar solicitud ☀️'; btn.style.background=''; },2800);
+        return;
+      }
+
+      const subject = encodeURIComponent('Solicitud de cotización – Technosombras');
+      const body = encodeURIComponent(
+        'Nombre: ' + nombre + '\n' +
+        'Teléfono / WhatsApp: ' + telefono + '\n' +
+        'Servicio de interés: ' + (servicio || 'No especificado') + '\n\n' +
+        'Mensaje:\n' + (mensaje || '(sin mensaje adicional)')
+      );
+      window.location.href = 'mailto:ventas@technosombras.com.mx?subject=' + subject + '&body=' + body;
+
+      btn.textContent='✅ ¡Listo! Revisa tu app de correo.';
+      btn.style.background='#1e6b2e';
+      setTimeout(()=>{ btn.textContent='Enviar solicitud ☀️'; btn.style.background=''; },4000);
+    }
+    // ── CAROUSEL ──
+    (function(){
+      const slides = document.querySelectorAll('#heroCarousel .carousel-slide');
+      const dotsEl = document.getElementById('carouselDots');
+      let current = 0, timer;
+      slides.forEach(function(_, i){
+        const d = document.createElement('button');
+        d.className = 'carousel-dot' + (i===0?' active':'');
+        d.setAttribute('aria-label','Imagen '+(i+1));
+        d.onclick = function(){ goTo(i); };
+        dotsEl.appendChild(d);
+      });
+      function goTo(n){
+        slides[current].classList.remove('active');
+        dotsEl.children[current].classList.remove('active');
+        current = (n + slides.length) % slides.length;
+        slides[current].classList.add('active');
+        dotsEl.children[current].classList.add('active');
+        clearInterval(timer);
+        timer = setInterval(function(){ goTo(current+1); }, 5000);
+      }
+      window.carouselMove = function(dir){ goTo(current+dir); };
+      timer = setInterval(function(){ goTo(current+1); }, 5000);
+    })();
+
+    const obs=new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){ e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; }
+      });
+    },{threshold:.1});
+    document.querySelectorAll('.product-card,.gallery-card,.value-item,.contact-card').forEach(el=>{
+      el.style.opacity='0'; el.style.transform='translateY(20px)';
+      el.style.transition='opacity .5s ease, transform .5s ease';
+      obs.observe(el);
+    });
+  </script>
+</body>
+</html>
